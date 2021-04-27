@@ -1,0 +1,118 @@
+import pygame as p
+
+weight,height = 800,600
+scr = p.display.set_mode((weight, height))
+
+Fps = p.time.Clock()
+
+
+p.display.set_caption("My paint")
+
+scr.fill((255,255,255))
+
+prev = None
+cur = None
+
+run = True
+
+BLACK = (0,0,0)
+RED = (255,0,0)
+GREEN = (0,255,0)
+BLUE = (0,0,255)
+YELLOW = (255,255,0)
+GOLUB = (0,255,255)
+PINK = (255,0,255) 
+WHITE = (255,255,255)
+
+
+
+drawing = "line"
+
+currentcolor = BLACK
+
+red= p.Rect(0,0,50,30)
+green = p.Rect(50,0,50,30)
+blue = p.Rect(100,0,50,30)
+white = p.Rect(150,0,50,30)
+black = p.Rect(200,0,50,30)
+yellow = p.Rect(250,0,50,30)
+golub = p.Rect(300,0,50,30)
+pink = p.Rect(350,0,50,30)
+rectangular = p.Rect(700, 500,30,40)
+line= p.Rect(730, 500,20,20)
+circle = p.Rect(760, 500,30,30)
+showing = True
+
+
+while run:
+    p.draw.rect(scr, RED, [0,0,50,30])
+    p.draw.rect(scr, GREEN, [50,0,50,30])
+    p.draw.rect(scr, BLUE, [100,0,50,30])
+    p.draw.rect(scr, WHITE, [150,0,50,30])
+    p.draw.rect(scr, BLACK, [200,0,50,30])
+    p.draw.rect(scr, YELLOW, [250,0,50,30])
+    p.draw.rect(scr, GOLUB, [300,0,50,30])
+    p.draw.rect(scr, PINK, [350,0,50,30])
+    p.draw.rect(scr, BLACK,(700, 500,30,40))
+    p.draw.line(scr,BLACK,(730,500),(750,500))
+    p.draw.circle(scr,BLACK,(775,515),15)
+    pos = p.mouse.get_pos()
+    for event in p.event.get():
+        if red.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                currentcolor = RED
+        if green.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                currentcolor = GREEN
+        if blue.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                currentcolor = BLUE
+        if white.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                currentcolor = WHITE
+        if black.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                currentcolor = BLACK
+        if yellow.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                currentcolor = YELLOW
+        if golub.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                currentcolor = GOLUB
+        if pink.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                currentcolor = PINK
+        if rectangular.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                drawing = "rectangle"
+        if line.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                drawing = "line"
+        if circle.collidepoint(pos):
+            if event.type == p.MOUSEBUTTONDOWN:
+                drawing = "circle"
+        if event.type == p.QUIT:
+            run = False
+        if event.type == p.MOUSEBUTTONDOWN:
+            prev = p.mouse.get_pos()
+        if event.type == p.MOUSEMOTION:
+            curr = p.mouse.get_pos()
+            if prev and drawing == "line":
+                p.draw.line(scr, currentcolor, prev, curr, 1)
+                prev = curr
+        if event.type == p.MOUSEBUTTONUP:
+            if drawing == "circle" and event.button == 1:
+                p.draw.circle(scr, currentcolor, prev, (curr[0]-prev[0]), 1)
+            elif drawing == "circle" and event.button == 3:
+                p.draw.circle(scr, currentcolor, prev, abs(curr[0]-prev[0]))
+                prev = None
+            elif prev and drawing == "rectangle" and event.button == 1:
+                p.draw.rect(scr, currentcolor,[prev[0],prev[1], (curr[0]-prev[0]),(curr[1]-prev[1])], 1)
+                prev = None
+            elif prev and drawing == "rectangle" and event.button == 3:
+                p.draw.rect(scr, currentcolor,[prev[0],prev[1], abs(curr[0]-prev[0]),abs(curr[1]-prev[1])])
+                prev = None
+            prev = None
+    p.display.flip()
+    Fps.tick(60)
+p.display.quit()
