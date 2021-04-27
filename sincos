@@ -1,0 +1,81 @@
+import pygame as py
+import math
+py.init()
+size=weight,height=(800,600)
+scr=py.display.set_mode(size)
+scr.fill((255,255,255))
+py.display.set_caption("Graph of SIN & COS")
+font = py.font.Font(None,20)
+run= True
+
+coor1 = font.render("1.00",True,10)
+coor2 = font.render("0,75",True,10)
+coor3 = font.render("0,50",True,10)
+coor4 = font.render("0,25",True,10)
+coor=font.render("0",True,10)
+coor12 = font.render("-0,25",True,10)
+coor22 = font.render("-0.50",True,10)
+coor32 = font.render("-0,75",True,10)
+coor42 = font.render("-1.00",True,10)
+scr.blit(coor1,(0,33+height//20-2))
+scr.blit(coor2,(0,33+height//20+height//10-7))
+scr.blit(coor3,(0,33+height//20+2*height//10-7))
+scr.blit(coor4,(0,33+height//20+3*height//10-7))
+scr.blit(coor,(0,33+height//20+4*height//10-7))
+scr.blit(coor12,(0,33+height//20+5*height//10-7))
+scr.blit(coor22,(0,33+height//20+6*height//10-7))
+scr.blit(coor32,(0,33+height//20+7*height//10-7))
+scr.blit(coor42,(0,33+height//20+8*height//10-7))
+
+sin=font.render("sin",False,(0,0,0))
+cos=font.render("cos",False,(0,0,0))
+sx=33
+dx=1
+while run:
+    for eve in py.event.get():
+        if eve.type==py.QUIT:
+            run=False
+    py.draw.rect(scr,(0,0,0),(30,30,740,540),5)
+    py.draw.line(scr,(0,0,0),(33,300),(weight-33,300),3)
+    py.draw.line(scr,(0,0,0),(400,33),(400,height-33),3)
+    y= 33+height//20
+    py.draw.line(scr,(0,0,0),(33,y),(weight-33,y))
+    for i in range (1,9):
+        if y<=height-32-height//20:
+            py.draw.line(scr,(0,0,0),(32,y+i*height//10-1),(weight-32,y+i*height//10-1))
+    x=weight//8
+    t=33+height//20+height//40
+    z=height//20+3
+    v=weight//8+weight//32
+    q=weight//8+weight//16
+    for i in range(0,7):
+        if x<weight:
+            py.draw.line(scr,(0,0,0),(x+i*weight//8,33),(x+i*weight//8,height-33))
+    for i in range(1,13):
+        if v<=weight-weight//8:
+            py.draw.line(scr,(0,0,0),(v,33),(v,41))
+            v+=weight//16
+    for i in range(0,6):
+        if q<weight-weight//8:
+            py.draw.line(scr,(0,0,0),(q,33),(q,47))
+            q+=weight//8
+    for i in range(1,17):
+            if t<=height-32-height//40:
+                py.draw.line(scr,(0,0,0),(33,t),(41,t))
+                py.draw.line(scr,(0,0,0,),(33,z),(47,z))
+                z+=(height//10)
+                t+=height//20
+    while (sx>=33 and sx<=767):
+        py.draw.line(scr,(255,0,0),(sx, -1 * (math.sin((sx) / 32))*240 + 303),(sx+dx , -1 * (math.sin ((sx+dx) / 32))*240 + 303))
+        if sx%4!=0:
+            py.draw.line(scr,(0,0,255),(sx, -1 * (math.cos((sx) / 32))*240 + 303),(sx+dx , -1 * (math.cos ((sx+dx) / 32))*240 + 303))
+        else:
+            py.draw.line(scr,(255,255,255),(sx, -1 * (math.cos((sx+dx) / 32))*230 + 290),(sx , -1 * (math.cos ((sx+dx) / 32))*230 + 290))
+        sx+=dx
+    scr.blit(sin,(weight/2+110,45))
+    py.draw.line(scr,(0,0,255),(weight/2+140,90),(weight/2+150,90))
+    py.draw.line(scr,(0,0,255),(weight/2+154,90),(weight/2+164,90))
+    scr.blit(cos,(weight/2+110,85))
+    py.draw.line(scr,(255,0,0),(weight/2+140,50),(weight/2+164,50))
+    py.display.flip()
+py.quit()
