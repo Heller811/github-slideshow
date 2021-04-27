@@ -1,0 +1,223 @@
+import pygame as p
+import random as r
+import time
+p.init()
+size=height,width=(700,500)
+scr=p.display.set_mode(size)
+p.display.set_caption("SNAKE")
+scr.fill((0,255,0))
+run = True
+elements=[[100,100]]
+
+class fruit():
+    def __init__(self):
+        self.x=r.randint(3,697)
+        self.y=r.randint(3,497)
+        self.rad=5
+    def move(self):
+        self.x=r.randint(3,697)
+        self.y=r.randint(3,497)
+    def draw(self):
+        p.draw.circle(scr, (255,0,0), [self.x, self.y], self.rad)
+class Snake():
+    def __init__(self, colour, element):
+        self.radius = 15
+        self.dx = 5
+        self.dy = 0
+        self.colour = colour
+        self.element = element
+
+    def move(self):
+        for i in range(len(self.element) - 1, 0, -1):
+            self.element[i][0] = self.element[i - 1][0]
+            self.element[i][1] = self.element[i - 1][1]
+        self.element[0][0] += self.dx
+        self.element[0][1] += self.dy
+        if self.element[0][0]>=714:
+            self.element[0][0]=(-13)
+        if self.element[0][1]>(514):
+            self.element[0][1]=(-13)
+        if self.element[0][0]<=(-14):
+            self.element[0][0]=713
+        if self.element[0][1]<=(-14):
+            self.element[0][1]=513
+    def draw(self):
+        for i in self.element:
+            p.draw.circle(scr,self.colour,i,self.radius)
+
+font=p.font.Font(None,30)
+def menu():
+    scr.fill((0,200,200))
+    run=True
+    choose = 0
+    while run:
+        for event in p.event.get():
+            if event.type == p.QUIT:
+                run = False
+                p.quit()
+            if event.type == p.KEYDOWN:
+                if event.key == p.K_1:
+                    run = False
+                    choose = 1
+                if event.key == p.K_2:
+                    run = False
+                    choose = 2
+                if event.key == p.K_3:
+                    run = False
+                    choose = 3
+                if event.key == p.K_4:
+                    run = False
+                    choose = 4
+        lvl1 = font.render("Press 1 to start 1 lvl",True,(0,0,0))
+        lvl2 = font.render("Press 2 to start 2 lbl",True,(0,0,0))
+        lvl3= font.render("Press 3 to start 3 lvl",True,(0,0,0))
+        lvlcop= font.render("Press 4 to play with friend",True,(0,0,0))
+        name= font.render("Snake",True,(255,0,0))
+        scr.blit(name,(200,100))
+        scr.blit(lvl1,(200,300))
+        scr.blit(lvl2,(200,350))
+        scr.blit(lvl3,(200,400))
+        scr.blit(lvlcop,(200,450))
+        p.display.flip()
+    return choose
+def game_ov():
+    scr.fill((0,0,0))
+    game_ov=font.render("GAME OVER!",True,(0,0,255))
+    scr.blit(game_ov,(250,250))
+    if choose != 4:
+        score = font.render('Total score: ' + str(Score), True, (255, 255, 255))
+        scr.blit(score, (300, 280))
+    else:
+        score1 = font.render('Total score of 1st player: ' + str(Score) ,True, (255,255,255))
+        score2 = font.render('Total score of 2nd player: ' + str(Score2) ,True, (255,255,255))
+        scr.blit(score1, (220, 280))
+        scr.blit(score2, (210, 340))
+    p.display.flip()
+    time.sleep(3)
+    p.quit()
+
+choose = menu()
+p.display.flip()
+clock=p.time.Clock()
+f=fruit()
+if choose==1:
+    Score=0
+    Coor=[[100,100]]
+    snake=Snake((0,255,255),Coor)
+    run=True
+    while run:
+        clock.tick(60)
+        for i in range(len(snake.element)-1):
+            for j in range(i+1,len(snake.element)-1):
+                if snake.element[i]==snake.element[j]:
+                    game_ov()
+        for event in p.event.get():
+            if event.type == p.QUIT:
+                run= False
+            if event.type == p.KEYDOWN:
+                if event.key == p.K_ESCAPE:
+                    menu()
+                if event.key == p.K_RIGHT and snake.dx != -5:
+                    snake.dx = 5
+                    snake.dy = 0
+                if event.key == p.K_LEFT and snake.dx != 5:
+                    snake.dx = -5
+                    snake.dy = 0
+                if event.key == p.K_UP and snake.dy != 5:
+                    snake.dx = 0
+                    snake.dy = -5
+                if event.key == p.K_DOWN and snake.dy != -5:
+                    snake.dx = 0
+                    snake.dy = 5
+        scr.fill((0,200,200))
+        snake.draw()
+        snake.move()
+        f.draw()
+        if f.y>=snake.element[0][1]-snake.radius and f.y<=snake.element[0][1]+snake.radius:
+            if f.x>=snake.element[0][0]-snake.radius and f.x<=snake.element[0][0]+snake.radius:
+                Score += 1
+                f.x = r.randint(100,600)
+                f.y = r.randint(100,500)
+                snake.element.append([-100,-100])
+        SCORE = font.render("Score " + str(Score), True, (255, 180, 0))
+        scr.blit(SCORE, (70,70))
+        p.display.flip()
+if choose==4:
+    Score=0
+    Score2=0
+    Coor=[[100,100]]
+    Coor2=[[300,300]]
+    snake=Snake((0,255,255),Coor)
+    snake2=Snake((255,255,0),Coor2)
+    run=True
+    while run:
+        clock.tick(60)
+        for i in range(len(snake.element)-1):
+            for j in range(i+1,len(snake.element)-1):
+                if snake.element[i]==snake.element[j]:
+                    game_ov()
+        for i in range(len(snake2.element)-1):
+            for j in range(i+1,len(snake2.element)-1):
+                if snake2.element[i]==snake2.element[j]:
+                    game_ov()
+        for i in range(len(snake.element)-1):
+            for j in range(len(snake2.element)-1):
+                if snake.element[i][1]>=snake2.element[j][1]-snake.radius and snake.element[i][1]<=snake2.element[j][1]+snake.radius:
+                    if snake.element[i][0]>=snake2.element[j][0]-snake.radius and snake.element[i][0]<=snake2.element[j][0]+snake.radius:
+                        game_ov()
+
+        for event in p.event.get():
+            if event.type == p.QUIT:
+                run= False
+            if event.type == p.KEYDOWN:
+                if event.key == p.K_ESCAPE:
+                    menu()
+                if event.key == p.K_RIGHT and snake.dx != -5:
+                    snake.dx = 5
+                    snake.dy = 0
+                if event.key == p.K_LEFT and snake.dx != 5:
+                    snake.dx = -5
+                    snake.dy = 0
+                if event.key == p.K_UP and snake.dy != 5:
+                    snake.dx = 0
+                    snake.dy = -5
+                if event.key == p.K_DOWN and snake.dy != -5:
+                    snake.dx = 0
+                    snake.dy = 5
+                
+                if event.key == p.K_d and snake2.dx != -5:
+                    snake2.dx = 5
+                    snake2.dy = 0
+                if event.key == p.K_a and snake2.dx != 5:
+                    snake2.dx = -5
+                    snake2.dy = 0
+                if event.key == p.K_w and snake2.dy != 5:
+                    snake2.dx = 0
+                    snake2.dy = -5
+                if event.key == p.K_s and snake2.dy != -5:
+                    snake2.dx = 0
+                    snake2.dy = 5
+        scr.fill((0,200,200))
+        snake.draw()
+        snake2.draw()
+        snake2.move()
+        snake.move()
+        f.draw()
+        if f.y>=snake.element[0][1]-snake.radius and f.y<=snake.element[0][1]+snake.radius:
+            if f.x>=snake.element[0][0]-snake.radius and f.x<=snake.element[0][0]+snake.radius:
+                Score += 1
+                f.x = r.randint(100,600)
+                f.y = r.randint(100,500)
+                snake.element.append([-100,-100])
+        if f.y>=snake2.element[0][1]-snake.radius and f.y<=snake2.element[0][1]+snake.radius:
+            if f.x>=snake2.element[0][0]-snake.radius and f.x<=snake2.element[0][0]+snake.radius:
+                Score2 += 1
+                f.x = r.randint(100,600)
+                f.y = r.randint(100,500)
+                snake2.element.append([-100,-100])
+        SCORE = font.render("1st player Score " + str(Score), True, (255, 180, 0))
+        SCORE2= font.render("2nd player Score"+ str(Score2),True,(255,180,0))
+        scr.blit(SCORE, (70,50))
+        scr.blit(SCORE2,(500,50))
+        p.display.flip()
+p.quit()

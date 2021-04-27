@@ -1,0 +1,21 @@
+import psycopg2 as psy
+con=psy.connect(
+    host='localhost',
+    database = 'postgres',
+    user='postgres',
+    password='adlet'
+    )
+sql="CREATE TABLE tabel(name VARCHAR(50) UNIQUE NOT NULL, lastname VARCHAR(50) NOT NULL,age INT NOT NULL );"
+sqr="INSERT INTO tabel(name,lastname,age) values('adlet','nurmaganbet',18);"
+sqt="""UPDATE tabel SET
+       name='Karlygash',
+       lastname='Kantovna',
+       age='50'
+       where name='adlet';"""
+sqq="""DELETE FROM tabel where 'name'='adlet';"""
+cursor=con.cursor()
+curs=con.cursor()
+cursor.execute(sql)
+curs.execute(sqr)
+cursor.close()
+con.close()

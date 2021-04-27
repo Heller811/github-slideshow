@@ -1,0 +1,123 @@
+import pygame as py
+import random
+py.init()
+
+class enemy():
+
+    def __init__(self):
+        self.x=random.randint(1,449)
+        self.y=(-100)
+        self.speed=random.randint(5,10)
+    def move(self):
+        self.y+=self.speed
+        if self.y>500:
+            self.y=(-100)
+            self.x=random.randint(0,450)
+            self.speed=random.randint(5,10)
+
+class сoin():
+    
+    def __init__(self):
+        self.x=random.randint(5,495)
+        self.y=10
+    def move(self):
+        self.y+=5
+        if self.y>500:
+            self.y=10
+            self.x=random.randint(5,495)
+
+
+size=(500,500)
+scr=py.display.set_mode(size)
+py.display.set_caption('ALISH 4ORT')
+scr.fill((0,0,0))
+clock=py.time.Clock()
+ending='Your Points='
+font= py.font.Font('C:\Windows\Fonts\calibril.ttf',50)
+text= font.render('GAME OVER',True,(0,0,0))
+text2=font.render(ending,True,(0,0,0))
+again=font.render('Press F to play again',True,(0,0,0))
+run=False
+x=250
+y=399
+speed=5
+e=enemy()
+c=сoin()
+counter=0
+coins=[]
+enems=[]
+enems.append(e)
+end=False
+coins.append(c)
+while not run:
+    for eve in py.event.get():
+        if eve.type==py.QUIT:
+            run=True
+        if not end:
+            if eve.type==py.KEYDOWN and eve.key==py.K_RSHIFT:
+                end=False
+                x=250
+                y=399
+                counter=0
+    scr.fill((255,255,255))
+    keys=py.key.get_pressed()
+    if keys[py.K_LEFT]:
+        x-=speed
+    if keys[py.K_RIGHT]:
+        x+=speed
+    if end:
+        if keys[py.K_f]:
+                x=250
+                y=399
+                counter=0
+                e.y=(-100)
+                e.x=random.randint(0,450)
+                c.y=(-5)
+                c.x=random.randint(0,495)
+                end=False
+
+    if x>450:
+        x=450
+    if x<0:
+        x=0
+    for coi in coins:
+        if coi.y<400:
+            py.draw.circle(scr,(255,255,0), (coi.x,coi.y-1),5)
+            coi.move()
+        elif coi.y>=400:
+            if coi.x>=x and coi.x<=(x+45):
+                coi.x=random.randint(5,495)
+                coi.y=10
+                counter+=10*e.speed
+              
+            else:
+                py.draw.circle(scr,(255,255,0),(coi.x,coi.y-1),5)
+                coi.move()
+    clock.tick(60)
+    
+    for keks in enems:
+        if keks.y<300:
+            py.draw.rect(scr,(255,0,0),(keks.x,keks.y,50,100))
+            keks.move()
+        elif keks.y>=300:
+            if keks.x>=x and keks.x<=(x+50):
+                end=True
+            if keks.x+50>=x and keks.x<=x:
+                end=True
+            else:
+                py.draw.rect(scr,(255,0,0),(keks.x,keks.y,50,100))
+                keks.move()
+    py.draw.rect(scr,(0,0,255),(x,y,50,100))
+    score=font.render(str(counter),True,(0,0,0))
+    scr.blit(score,(400,20))
+    if end:
+        py.draw.rect(scr,(255,0,0),(0,0,500,500))
+        scr.blit(text,(100,100))
+        scr.blit(text2,(50,300))
+        scr.blit(score,(300,300))
+        x=-1000
+        y=-1000
+        scr.blit(again,(50,400))
+    py.display.flip()
+py.quit()
+
